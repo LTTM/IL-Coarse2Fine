@@ -67,6 +67,7 @@ def DataLoader(dir_img,dir_seg,batch_size):
 		yield np.array(X) , np.array(Y)
 
 def iou_score(gt, pr, class_weights=1., smooth=SMOOTH, per_image=False):
+	""" this code is provided by Qubvel's repository: https://github.com/qubvel/segmentation_models"""
 	r""" The `Jaccard index`_, also known as Intersection over Union and the Jaccard similarity coefficient
 	(originally coined coefficient de communauté by Paul Jaccard), is a statistic used for comparing the
 	similarity and diversity of sample sets. The Jaccard coefficient measures similarity between finite sample sets,
@@ -104,6 +105,7 @@ def iou_score(gt, pr, class_weights=1., smooth=SMOOTH, per_image=False):
 jaccard_score = iou_score
 
 def jaccard_loss(gt, pr, class_weights=1., smooth=SMOOTH, per_image=True):
+    """ this code is provided by Qubvel's repository: https://github.com/qubvel/segmentation_models"""    
     r"""Jaccard loss function for imbalanced datasets:
     .. math:: L(A, B) = 1 - \frac{A \cap B}{A \cup B}
     Args:
@@ -121,7 +123,7 @@ def jaccard_loss(gt, pr, class_weights=1., smooth=SMOOTH, per_image=True):
 
 
 train_images_path = './TrainImages/'
-train_segs_path_4 = './TrainLabels/'
+train_segs_path = './TrainLabels/'
 val_images_path = './ValImages/'
 val_segs_path = './ValLabels/'
 G1= DataLoader(train_images_path,train_segs_path,bs)

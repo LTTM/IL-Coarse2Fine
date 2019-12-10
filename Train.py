@@ -139,9 +139,9 @@ def step_decay_schedule(initial_lr=1e-3, decay_factor=0.75, step_size=10):
     return LearningRateScheduler(schedule)
 
 
-modelcp=keras.callbacks.ModelCheckpoint('./cp/{epoch:02d}-{val_pixel_accuracy_14:.3f}.h5',
+modelcp=keras.callbacks.ModelCheckpoint('./{epoch:02d}-{val_pixel_accuracy_14:.3f}.h5',
                                           monitor='categorical_accuracy', verbose=1, save_best_only=True, save_weights_only=False, mode='max', period=1)
-model = Deeplabv3()
+model = Deeplabv3(multi_task = False)
 print(model.summary())
 sgd = optimizers.SGD(lr=0.0, decay=0.0, momentum=0.9, nesterov=True)
 model.compile(optimizer = sgd, loss =jaccard_loss,metrics = [metrics.categorical_accuracy])

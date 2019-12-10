@@ -2,7 +2,7 @@
 This repository contains the code for the paper: "Incremental and Multi-Task Learning Strategies for Coarse-to-Fine Semantic Segmentation"
 
 ## Approach
-We propose some incremental and multi-Task learning strategies for indoor semantic segmentation task based on the [NYUV2](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html) dataset. Our approach can be separated into two parts:
+We propose a number of incremental and multi-Task learning strategies for indoor semantic segmentation task based on the [NYUV2](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html) dataset. Our approach can be separated into two parts:
 1) The first part focuses on knowledge transfer strategies from coarser to finer semantic segmentation. 
 2) The second part proposes a multi-task like approach for simultaneous output of different semantic segmentation maps with different number of classes.
 ![alt text](images/Architecture.png " ")

@@ -8,8 +8,8 @@ We propose some incremental and multi-Task learning strategies for indoor semant
 ![alt text](images/Architecture.png " ")
 
 ## Model
-DeepLab V3+ is the state-of-the-art for semantic segmentation maps, We used it as the base model in our approach and modified the input as well as the output layers depending on the target task.
-A keras implementation of DeepLab v3+ is available at: https://github.com/bonlime/keras-deeplab-v3-plus
+DeepLab V3+ is the state-of-the-art for semantic segmentation tasks, We used it as the base model in our approach and modified the input as well as the output layers depending on the target task we wanted to perform.
+The original keras implementation of DeepLab v3+ that we used is available at: https://github.com/bonlime/keras-deeplab-v3-plus
 
 ## Setup
 * Download and [NYUV2](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html) dataset (795 training images and 654 test images) with the three sets of labeling (4, 13, and 40 classes). Note that we used pre-processed version of the dataset where the surface normals are added to the RGB and depth channels, refer to this [paper](https://ieeexplore.ieee.org/document/8120042). 

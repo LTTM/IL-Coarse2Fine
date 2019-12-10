@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """ Deeplabv3+ model with Exception backbone for Keras:
-The bellow code is taken from Bonlime's repository: 
+This code is provided by Bonlime's repository: 
 https://github.com/bonlime/keras-deeplab-v3-plus
 
 # Reference
@@ -284,8 +284,13 @@ def Deeplabv3(weights='pascal_voc', input_tensor=None, input_shape=(425, 560,9),
             to use as image input for the model.
         input_shape: shape of input image. format HxWxC
             PASCAL VOC model was trained on (512,512,3) images
+	IL_approach: incremental approach to be used can be 'softmax' or 'edges' 
+	    (using the softmax or edges output of the first stage)
+	multi_task: enables simultaneous output of different segmentation maps 
+	     for the 3 sets of classes (4, 13, and 40)
         classes: number of desired classes. If classes != 21,
             last layer is initialized randomly
+	activation: last layer activation function
         backbone: backbone to use. one of {'xception','mobilenetv2'}
         OS: determines input_shape/feature_extractor_output ratio. One of {8,16}.
             Used only for xception backbone.
@@ -325,7 +330,7 @@ def Deeplabv3(weights='pascal_voc', input_tensor=None, input_shape=(425, 560,9),
     if input_tensor is None:
         img_input1 = Input(shape=(425,560,9)) # Original 9-D inputs (RGB + DEPTH + SURFACE NORMALS)
         if IL_approach =='softmax':
-        	img_input2 = Input(shape=(( 425,560,4))) # nbr of channels = nbr of classes predicted by stage 1
+		img_input2 = Input(shape=(( 425,560,4))) # nbr of channels = nbr of classes predicted by stage 1
         else if IL_approach =='edges':
         	img_input2 = Input(shape=((425,560,1))) # Edge maps
 
@@ -457,22 +462,47 @@ def Deeplabv3(weights='pascal_voc', input_tensor=None, input_shape=(425, 560,9),
         last_layer_name = 'logits_semantic'
     else:
         last_layer_name = 'custom_logits_semantic'
-    x_13 = Conv2D(classes[1], (1, 1), padding='same',name=last_layer_name+'14')(x) # Predicte 13 classes
-    x_13 =  BilinearUpsampling(output_size=(int(np.ceil(input_shape[0] )),
-                                            int(np.ceil(input_shape[1] ))))(x_4)
+    if multi_task == True:
+	x_4 = Conv2D(classes[0], (1, 1), padding='same',name=last_layer_name+'4')(x)
+	x_13 = Conv2D(classes[1], (1, 1), padding='same',name=last_layer_name+'13')(x)
+	x_40 = Conv2D(classes[2], (1, 1), padding='same',name=last_layer_name+'40')(x)
+	
+        x_4 =  BilinearUpsampling(output_size=(int(np.ceil(input_shape[0] )),
+                                               int(np.ceil(input_shape[1] ))))(x_4)
+	x_13 =  BilinearUpsampling(output_size=(int(np.ceil(input_shape[0] )),
+                                               int(np.ceil(input_shape[1] ))))(x_13)
+        x_40 =  BilinearUpsampling(output_size=(int(np.ceil(input_shape[0] )),
+                                               int(np.ceil(input_shape[1] ))))(x_40)
+	
+        # Ensure that the model takes into account
+        # any potential predecessors of `input_tensor`.
+        if input_tensor is not None:
+		inputs = get_source_inputs(input_tensor)
+        else:
+		inputs = img_input1
+
+        if activation in {'softmax','sigmoid'}:
+		x_4 = Activation(activation)(x_4)
+		x_13 = Activation(activation)(x_13)
+		x_40 = Activation(activation)(x_40)
+        model = Model(inputs, outputs = [x_4,x_13,x_40] , name='deeplabv3plus')
+    else:
+	x = Conv2D(classes[1], (1, 1), padding='same',name=last_layer_name+'14')(x) # Predicte 13 classes
+        x =  BilinearUpsampling(output_size=(int(np.ceil(input_shape[0] )),
+                                                int(np.ceil(input_shape[1] ))))(x)
 
     # Ensure that the model takes into account
     # any potential predecessors of `input_tensor`.
     if input_tensor is not None:
         inputs = get_source_inputs(input_tensor)
     else:
-        inputs = img_input1
+        inputs = img_input1 # change the inputs with respect to the task to be performed
 
     if activation in {'softmax','sigmoid'}:
-        x_13 = Activation(activation)(x_13)
+        x = Activation(activation)(x)
 
 
-    model = Model(inputs, outputs = x_13, name='deeplabv3plus')
+    model = Model(inputs, outputs = x, name='deeplabv3plus')
     # load weights
 
     if weights == 'pascal_voc':
@@ -481,7 +511,7 @@ def Deeplabv3(weights='pascal_voc', input_tensor=None, input_shape=(425, 560,9),
                                     WEIGHTS_PATH_X,
                                     cache_subdir='models')
         else:
-            weights_path = get_file('deeplabv3_mobilenetv2_tf_dim_ordering_tf_kernels.h5',
+            weights_path = get_file('./deeplabv3_mobilenetv2_tf_dim_ordering_tf_kernels.h5',
                                     WEIGHTS_PATH_MOBILE,
                                     cache_subdir='models')
         model.load_weights(weights_path, by_name=True)
@@ -491,7 +521,7 @@ def Deeplabv3(weights='pascal_voc', input_tensor=None, input_shape=(425, 560,9),
                                     WEIGHTS_PATH_X_CS,
                                     cache_subdir='models')
         else:
-            weights_path = get_file('deeplabv3_mobilenetv2_tf_dim_ordering_tf_kernels_cityscapes.h5',
+            weights_path = get_file('./deeplabv3_mobilenetv2_tf_dim_ordering_tf_kernels_cityscapes.h5',
                                     WEIGHTS_PATH_MOBILE_CS,
                                     cache_subdir='models')
         model.load_weights(weights_path, by_name=True)

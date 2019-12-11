@@ -28,7 +28,7 @@ One way to do that is to store those predictions in a separate directory and the
 * We used the following components:
   * OS: Microsoft Windows 10 Pro Education.
   * CPU: Intel(R) Core(TM) i7 CPU 970@3.2Ghz.
-  * GPU: NVIDIA Tesla K40 241 with 12 GB of memory.
+  * GPU: NVIDIA Tesla K40 with 12 GB of memory.
 
 # License
 

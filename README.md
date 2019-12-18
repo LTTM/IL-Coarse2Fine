@@ -1,5 +1,19 @@
 # IL-Coarse2Fine
-This repository contains the code for the paper: "Incremental and Multi-Task Learning Strategies for Coarse-to-Fine Semantic Segmentation" submitted to MDPI Technologies
+This repository contains the code for the paper: "Incremental and Multi-Task Learning Strategies for Coarse-to-Fine Semantic Segmentation", Technologies 2020 vol.8 num. 1, special issue on Computer Vision and Image Processing Technologies. The full paper can be found [here](https://www.mdpi.com/2227-7080/8/1/1).
+
+If you find this code useful please cite our paper as:
+
+```
+@article{mel2020coarse,
+  title={{Incremental and Multi-Task Learning Strategies for Coarse-to-Fine Semantic Segmentation}},
+  author={Mel, Mazen and Michieli, Umberto and Zanuttigh, Pietro},
+  journal={Technologies, special issue on Computer Vision and Image Processing Technologies},
+  year={2020},
+  volume={8},
+  number={1}
+}
+```
+
 
 ## Approach
 We propose a few incremental and multi-Task learning strategies for indoor semantic segmentation. The approaches have been tested on the [NYUV2](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html) dataset. Our approach can be separated into two parts:
